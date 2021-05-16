@@ -2,12 +2,11 @@ package user
 
 import (
     "fmt"
-
     "github.com/gin-gonic/gin"
-		"readinglist-backend-api/service"
+    "readinglist-backend-api/service/user"
 )
 
-// Controller is user controlller
+// Controller is user controller
 type Controller struct{}
 
 // Index action: GET /users

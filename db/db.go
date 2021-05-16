@@ -34,6 +34,6 @@ func GetDB() *gorm.DB {
 // }
 
 func autoMigration() {
-    db.AutoMigrate(&entity.User{}, &entity.Leadinglist{})
+    db.AutoMigrate(&entity.User{}, &entity.Leadinglist{}, &entity.Article{})
 
 }
