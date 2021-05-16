@@ -8,6 +8,7 @@ import (
 // User is user models property
 type Article struct {
 		gorm.Model
+		ID        	uint 			`gorm:"primarykey" gorm:"AUTO_INCREMENT"`
 		Userid 			string 		`json:"user_id"`
     Title 			string 		`json:"title"`
 		URL  				string 		`json:"url"`
