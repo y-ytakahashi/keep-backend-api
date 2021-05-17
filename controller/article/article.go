@@ -32,15 +32,14 @@ func (pc Controller) Create(c *gin.Context) {
 
 	r, err := s.RequestParse(c)
 
-	// p, err := s.CreateModel(c)
+	p, err := s.CreateModel(r)
 
 
 	if err != nil {
 			c.AbortWithStatus(400)
 			fmt.Println(err)
 	} else {
-			// c.JSON(201, p)
-			c.JSON(201, r)
+			c.JSON(201, p)
 	}
 }
 

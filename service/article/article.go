@@ -1,8 +1,8 @@
 package article
 
 import (
-		"fmt"
-		// "encoding/json"
+    "fmt"
+    "encoding/json"
     "github.com/gin-gonic/gin"
     "readinglist-backend-api/db"
     "readinglist-backend-api/entity"
@@ -16,8 +16,8 @@ type Article entity.Article
 //APIリクエストの構造
 type request struct{
 	Userid 		string	`json:"user_id"`
-	AuthToken string	`json:"authtoken"`
-	URL 			string	`json:"url"`
+	AuthToken   string	`json:"authtoken"`
+    URL 		string	`json:"url"`
 }
 
 // GetAll is get all Article
@@ -33,7 +33,7 @@ func (s Service) GetAll() ([]Article, error) {
 }
 
 // RequestParse front Request url param analysis OGP
-func (s Service) RequestParse(c *gin.Context) (*gin.Context, error) {
+func (s Service) RequestParse(c *gin.Context) (Article, error) {
 	var u Article
 	var r request
 
@@ -43,38 +43,59 @@ func (s Service) RequestParse(c *gin.Context) (*gin.Context, error) {
 		c.AbortWithStatus(400)
 		fmt.Println(err)
 	}
-  dummy := []byte(`{"num":6.13,"strs":["a","b"]}`)
+    type Dummy struct {
+        Title       string `json:"title"`
+        Description string `json:"description"`
+        Header      string `json:"header"`
+        Body        string `json:"body"`
+    }
+    var d Dummy
+    dummy := `
+        {
+            "title":"タイトル",
+            "description": "コメント",
+            "header": "ヘッダー情報",
+            "body": "本文"
+        }
+    `
+    // json ダミー構造体に値をセット
+
+    json.Unmarshal([]byte(dummy), &d)
 	fmt.Println("do request param parse generate OGP")
-	fmt.Println(dummy)
-	// 構造体  BindJSON を呼び出す際に、独自データを代入する方法を調査
+	// ここに 対象Webページを解析するロジックを記述する
+    //OGP から サムネイルなど概要用情報を取得する
 
+
+    // 静的解析処理を記述するまで、OGPで取得できるデータはダミーとする
 	u.Userid = r.Userid
-	u.Title = `{"Title":"なぜぱーすされない"}`
+	u.Title = d.Title
 	u.URL = r.URL
-	u.Description = "description"
-	u.Header = "header"
-	u.Body = "Body"
-	fmt.Println(u)
-
+	u.Description = d.Description
+	u.Header = d.Header
+	u.Body = d.Body
+    // if err := c.BindJSON(&u); err == nil {
+	// 	fmt.Println("parse request param")
+	// 	c.AbortWithStatus(400)
+	// 	fmt.Println(err)
+	// }
 	return u, nil
 }
 
 // CreateModel is create Article model
-// func (s Service) CreateModel(c *gin.Context) (Article, error) {
-	func (s Service) CreateModel(c *gin.Context) (Article, error) {
+func (s Service) CreateModel(c Article) (Article, error) {
     db := db.GetDB()
-		// DB 登録用の構造
-    var u Article
+        // DB 登録用の構造
+    // var u Article
+    // err := json.Unmarshal([]byte(c), &u)
+    // if err := c.BindJSON(&u); err != nil {
+    // 	return u, err
+    // }
 
-		if err := c.BindJSON(&u); err != nil {
-			return u, err
-		}
+    if err := db.Create(&c).Error; err != nil {
+        return c, err
+    }
 
-		if err := db.Create(&u).Error; err != nil {
-			return u, err
-		}
-
-    return u, nil
+    return c, nil
 }
 
 // // GetByID is get a Article
