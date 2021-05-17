@@ -13,6 +13,7 @@ type Service struct{}
 
 // Article is alias of entity.Article struct
 type Article entity.Article
+
 //APIリクエストの構造
 type request struct{
 	Userid 		string	`json:"user_id"`
@@ -32,13 +33,14 @@ func (s Service) GetAll() ([]Article, error) {
     return u, nil
 }
 
+
 // RequestParse front Request url param analysis OGP
 func (s Service) RequestParse(c *gin.Context) (Article, error) {
 	var u Article
 	var r request
 
 	// Frontからのリクエストパラメータのパースに失敗した場合に400を応答
-	if err := c.BindJSON(&r); err == nil {
+	if err := c.BindJSON(&r); err != nil {
 		fmt.Println("parse request param")
 		c.AbortWithStatus(400)
 		fmt.Println(err)
@@ -98,17 +100,18 @@ func (s Service) CreateModel(c Article) (Article, error) {
     return c, nil
 }
 
-// // GetByID is get a Article
-// func (s Service) GetByID(id string) (Article, error) {
-//     db := db.GetDB()
-//     var u Article
 
-//     if err := db.Where("id = ?", id).First(&u).Error; err != nil {
-//         return u, err
-//     }
+// GetByID is get a Article
+func (s Service) GetByID(id string) ([]Article, error) {
+    db := db.GetDB()
+    var u []Article
 
-//     return u, nil
-// }
+    if err := db.Where("userid = ?", id).Find(&u).Error; err != nil {
+        return u, err
+    }
+
+    return u, nil
+}
 
 // // UpdateByID is update a Article
 // func (s Service) UpdateByID(id string, c *gin.Context) (Article, error) {

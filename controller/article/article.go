@@ -1,7 +1,6 @@
 package article
 import (
 	"fmt"
-	// "log"
 	"github.com/gin-gonic/gin"
 	"readinglist-backend-api/service/article"
 	// debug
@@ -12,6 +11,9 @@ import (
 type Controller struct{}
 
 // Index action: GET /article
+
+
+// Index action: GET /articles
 func (pc Controller) Index(c *gin.Context) {
 	var s article.Service
 	p, err := s.GetAll()
@@ -24,17 +26,27 @@ func (pc Controller) Index(c *gin.Context) {
 	}
 }
 
+// Show action: GET /users/:id
+func (pc Controller) Show(c *gin.Context) {
+	// request が json の場合、 Query で値を取得する
+	id := c.Query("user_id")
+	var s article.Service
+	p, err := s.GetByID(id)
+
+	if err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println(err)
+	} else {
+			c.JSON(200, p)
+	}
+}
+
+
 // Create action: POST /article
 func (pc Controller) Create(c *gin.Context) {
 	var s article.Service
-
-
-
 	r, err := s.RequestParse(c)
-
 	p, err := s.CreateModel(r)
-
-
 	if err != nil {
 			c.AbortWithStatus(400)
 			fmt.Println(err)
