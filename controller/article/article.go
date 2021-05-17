@@ -1,7 +1,7 @@
 package article
 import (
 	"fmt"
-	"log"
+	// "log"
 	"github.com/gin-gonic/gin"
 	"readinglist-backend-api/service/article"
 	// debug
@@ -27,7 +27,13 @@ func (pc Controller) Index(c *gin.Context) {
 // Create action: POST /article
 func (pc Controller) Create(c *gin.Context) {
 	var s article.Service
-	p, err := s.CreateModel(c)
+
+
+
+	r, err := s.RequestParse(c)
+
+	p, err := s.CreateModel(r)
+
 
 	if err != nil {
 			c.AbortWithStatus(400)
