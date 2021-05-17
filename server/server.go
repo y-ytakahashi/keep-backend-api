@@ -29,19 +29,19 @@ func router() *gin.Engine {
 		// ユーザー関係のルーティング定義
     u := r.Group("/users")
     {
-        ctrl := user.Controller{}
-        u.GET("", ctrl.Index)
-        u.GET("/:id", ctrl.Show)
-        u.POST("", ctrl.Create)
-        u.PUT("/:id", ctrl.Update)
-        u.DELETE("/:id", ctrl.Delete)
-    }
+			ctrl := user.Controller{}
+			u.GET("", ctrl.Index)
+			u.GET("/:id", ctrl.Show)
+			u.POST("", ctrl.Create)
+			u.PUT("/:id", ctrl.Update)
+			u.DELETE("/:id", ctrl.Delete)
+		}
 
-		a := r.Group("/article")
+		a := r.Group("/articles")
 		{
 			ctrl := article.Controller{}
-			a.GET("",  ctrl.Index)
 			a.POST("", ctrl.Create)
+			a.GET("/:id",  ctrl.Show)
 		}
 
 
