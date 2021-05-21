@@ -6,6 +6,8 @@ import (
     "github.com/gin-gonic/gin"
     "readinglist-backend-api/db"
     "readinglist-backend-api/entity"
+
+
 )
 
 // Service procides Article's behavior
@@ -13,7 +15,7 @@ type Service struct{}
 
 // Article is alias of entity.Article struct
 type Article entity.Article
-
+type ParseURL ParseArticle
 //APIリクエストの構造
 type request struct{
 	Userid 		string	`json:"user_id"`
@@ -60,6 +62,10 @@ func (s Service) RequestParse(c *gin.Context) (Article, error) {
             "body": "本文"
         }
     `
+
+    // HTML 構造解析を実施
+    res := ScanArticle(r.URL)
+    fmt.Println(res)
     // json ダミー構造体に値をセット
 
     json.Unmarshal([]byte(dummy), &d)
