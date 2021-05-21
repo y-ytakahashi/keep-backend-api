@@ -8,9 +8,17 @@ import (
 // ParseArticle procides Article's behavior
 type ParseArticle struct{}
 
+// OGPScanResult is OGP Meta Tag value
+type OGPScanResult struct{
+	Title       	string
+	Description 	string
+	ThumbnailURL 	string
+	Header      	string
+	Body        	string
+}
 
 // ScanArticle is scan article
-func ScanArticle(url string) *goquery.Document{
+func ScanArticle(url string) OGPScanResult{
 	
 	fmt.Println(url)
 	// URLの静的解析を実行
@@ -18,6 +26,7 @@ func ScanArticle(url string) *goquery.Document{
 	if err != nil {
 		panic(err)
 	}
+
 
 	var pageTitle string
 	var metaDescription string
@@ -42,6 +51,17 @@ func ScanArticle(url string) *goquery.Document{
 
 	body := doc.Find("body")
 	fmt.Println(body)
-	return doc
+
+	// OGP解析で取得したメタ情報
+	rtnVal := OGPScanResult{
+		Title					: pageTitle,
+		Description		:	metaDescription,
+		ThumbnailURL	: metaImageURL,
+		Header				: "ほげほげ",
+		Body					: "ふがふが",
+	}
+
+
+	return rtnVal
 
 }

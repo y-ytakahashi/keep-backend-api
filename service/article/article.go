@@ -2,7 +2,6 @@ package article
 
 import (
     "fmt"
-    "encoding/json"
     "github.com/gin-gonic/gin"
     "readinglist-backend-api/db"
     "readinglist-backend-api/entity"
@@ -15,6 +14,8 @@ type Service struct{}
 
 // Article is alias of entity.Article struct
 type Article entity.Article
+
+// ParseURL is Scan OGP Meta Data
 type ParseURL ParseArticle
 //APIリクエストの構造
 type request struct{
@@ -47,28 +48,11 @@ func (s Service) RequestParse(c *gin.Context) (Article, error) {
 		c.AbortWithStatus(400)
 		fmt.Println(err)
 	}
-    type Dummy struct {
-        Title       string `json:"title"`
-        Description string `json:"description"`
-        Header      string `json:"header"`
-        Body        string `json:"body"`
-    }
-    var d Dummy
-    dummy := `
-        {
-            "title":"タイトル",
-            "description": "コメント",
-            "header": "ヘッダー情報",
-            "body": "本文"
-        }
-    `
 
     // HTML 構造解析を実施
     res := ScanArticle(r.URL)
     fmt.Println(res)
-    // json ダミー構造体に値をセット
 
-    json.Unmarshal([]byte(dummy), &d)
 	fmt.Println("do request param parse generate OGP")
 	// ここに 対象Webページを解析するロジックを記述する
     //OGP から サムネイルなど概要用情報を取得する
@@ -76,11 +60,12 @@ func (s Service) RequestParse(c *gin.Context) (Article, error) {
 
     // 静的解析処理を記述するまで、OGPで取得できるデータはダミーとする
 	u.Userid = r.Userid
-	u.Title = d.Title
+	u.Title = res.Title
 	u.URL = r.URL
-	u.Description = d.Description
-	u.Header = d.Header
-	u.Body = d.Body
+	u.Description = res.Description
+    u.ThumbnailURL = res.ThumbnailURL
+	u.Header = res.Header
+	u.Body = res.Body
     // if err := c.BindJSON(&u); err == nil {
 	// 	fmt.Println("parse request param")
 	// 	c.AbortWithStatus(400)
