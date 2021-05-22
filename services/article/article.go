@@ -1,33 +1,37 @@
-package article
+package services
 
 import (
-    "fmt"
-    "github.com/gin-gonic/gin"
-    "readinglist-backend-api/db"
-    "readinglist-backend-api/entity"
+	"fmt"
+	"readinglist-backend-api/db"
+	"readinglist-backend-api/entity"
+	models "readinglist-backend-api/models/article"
 
-
+	"github.com/gin-gonic/gin"
 )
 
-// Service procides Article's behavior
-type Service struct{}
+// ArticleService procides Article's behavior
+type ArticleService struct{}
 
-// Article is alias of entity.Article struct
-type Article entity.Article
+// Entity is alias of entity.Article struct
+type Entity entity.Article
+
+// Model is Article models
+type Model models.ArticleModels
 
 // ParseURL is Scan OGP Meta Data
 type ParseURL ParseArticle
+
 //APIリクエストの構造
 type request struct{
-	Userid 		string	`json:"user_id"`
+	Userid 			string	`json:"user_id"`
 	AuthToken   string	`json:"authtoken"`
-    URL 		string	`json:"url"`
+	URL 				string	`json:"url"`
 }
 
 // GetAll is get all Article
-func (s Service) GetAll() ([]Article, error) {
+func (s ArticleService) GetAll() ([]Entity, error) {
     db := db.GetDB()
-    var u []Article
+    var u []Entity
 
     if err := db.Find(&u).Error; err != nil {
         return nil, err
@@ -38,8 +42,8 @@ func (s Service) GetAll() ([]Article, error) {
 
 
 // RequestParse front Request url param analysis OGP
-func (s Service) RequestParse(c *gin.Context) (Article, error) {
-	var u Article
+func (s ArticleService) RequestParse(c *gin.Context) (Entity, error) {
+	var u Entity
 	var r request
 
 	// Frontからのリクエストパラメータのパースに失敗した場合に400を応答
@@ -59,13 +63,13 @@ func (s Service) RequestParse(c *gin.Context) (Article, error) {
 
 
     // 静的解析処理を記述するまで、OGPで取得できるデータはダミーとする
-	u.Userid = r.Userid
-	u.Title = res.Title
-	u.URL = res.URL
-	u.Description = res.Description
-    u.ThumbnailURL = res.ThumbnailURL
-	u.Header = res.Header
-	u.Body = res.Body
+	u.Userid 				= r.Userid
+	u.Title 				= res.Title
+	u.URL 					= res.URL
+	u.Description 	= res.Description
+  u.ThumbnailURL 	= res.ThumbnailURL
+	u.Header 				= res.Header
+	u.Body 					= res.Body
     // if err := c.BindJSON(&u); err == nil {
 	// 	fmt.Println("parse request param")
 	// 	c.AbortWithStatus(400)
@@ -75,7 +79,7 @@ func (s Service) RequestParse(c *gin.Context) (Article, error) {
 }
 
 // CreateModel is create Article model
-func (s Service) CreateModel(c Article) (Article, error) {
+func (s ArticleService) CreateModel(c Entity) (Entity, error) {
     db := db.GetDB()
         // DB 登録用の構造
     // var u Article
@@ -92,17 +96,37 @@ func (s Service) CreateModel(c Article) (Article, error) {
 }
 
 
-// GetByID is get a Article
-func (s Service) GetByID(id string) ([]Article, error) {
-    db := db.GetDB()
-    var u []Article
+// GetByUserID is get a Article
+func (s ArticleService) GetByUserID(id string) ([]entity.Article, error) {
 
-    if err := db.Where("userid = ?", id).Find(&u).Error; err != nil {
-        return u, err
-    }
+	var methods models.ArticleModels
+	fmt.Println(id)
+	res,err := methods.GetByID(id)
 
-    return u, nil
+	if(err != nil){
+		fmt.Println("error")
+		return res, err
+	}
+
+	return res, nil
 }
+
+// GetByArticle
+func (s ArticleService) ViewArticleList(id string) ([]entity.ViewArticle, error) {
+
+	var methods models.ArticleModels
+	fmt.Println(id)
+	res,err := methods.GetViewReadingList(id)
+
+	if(err != nil){
+		fmt.Println("error")
+		return res, err
+	}
+
+	return res, nil
+}
+
+
 
 // // UpdateByID is update a Article
 // func (s Service) UpdateByID(id string, c *gin.Context) (Article, error) {
