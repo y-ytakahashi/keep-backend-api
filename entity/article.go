@@ -4,10 +4,8 @@ import (
 	"gorm.io/gorm"
 )
 
-
 // Article is user models property
 type Article struct {
-		gorm.Model
 		ID       			uint 			`gorm:"primarykey" gorm:"AUTO_INCREMENT"`
 		Userid 				string 		`json:"user_id"`
     Title 				string 		`json:"title"`
@@ -16,6 +14,7 @@ type Article struct {
 		ThumbnailURL	string 		`json:"thumbnail"`
 		Header 				string 		`json:"header"`
 		Body 					string 		`json:"body"`
+		gorm.Model
 }
 
 // ResArticle return front data

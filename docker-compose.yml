@@ -1,10 +1,19 @@
 version: "3.7"
 services:
   db:
-    image: postgres:alpine
+    image: mysql:8.0
+    container_name: keep_mysql
+    restart: always
     environment:
-      POSTGRES_USER: gorm
-      POSTGRES_PASSWORD: gorm
-      POSTGRES_DB: gorm
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keep
+      MYSQL_USER: gorm
+      MYSQL_PASSWORD: gorm
+      TZ: "Asia/Tokyo"
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      # - ./docker/db/sql:/docker-entrypoint-initdb.d
     ports:
-      - 5432:5432
+      - 3306:3306

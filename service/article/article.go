@@ -61,7 +61,7 @@ func (s Service) RequestParse(c *gin.Context) (Article, error) {
     // 静的解析処理を記述するまで、OGPで取得できるデータはダミーとする
 	u.Userid = r.Userid
 	u.Title = res.Title
-	u.URL = r.URL
+	u.URL = res.URL
 	u.Description = res.Description
     u.ThumbnailURL = res.ThumbnailURL
 	u.Header = res.Header
