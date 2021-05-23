@@ -42,8 +42,8 @@ func (s ArticleService) GetAll() ([]Entity, error) {
 
 
 // RequestParse front Request url param analysis OGP
-func (s ArticleService) RequestParse(c *gin.Context) (Entity, error) {
-	var u Entity
+func (s ArticleService) RequestParse(c *gin.Context) (entity.Article, error) {
+	var u entity.Article
 	var r request
 
 	// Frontからのリクエストパラメータのパースに失敗した場合に400を応答
@@ -79,7 +79,7 @@ func (s ArticleService) RequestParse(c *gin.Context) (Entity, error) {
 }
 
 // CreateModel is create Article model
-func (s ArticleService) CreateModel(c Entity) (Entity, error) {
+func (s ArticleService) CreateModel(c entity.Article) (entity.Article, error) {
     db := db.GetDB()
         // DB 登録用の構造
     // var u Article

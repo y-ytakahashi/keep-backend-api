@@ -35,16 +35,7 @@ func ScanArticle(url string) OGPScanResult{
 	var metaImageURL string
 	var metaURL string
 
-	pageTitle = doc.Find("title").Contents().Text()
-
-	// 以下の指定で記事本文の取得が可能
-	pageHeader := doc.Find("header").Contents().Text()
-	cnvPageHeader := convNewline(pageHeader, " ")
-
-	pageBody := doc.Find("body").Contents().Text()
-	cnvPageBody := convNewline(pageBody," ")
-
-
+	
 	// 実装参考 https://qiita.com/Yaruki00/items/b50e346551690b158a79
 	doc.Find("meta").Each(func(index int, item *goquery.Selection) {
 
@@ -72,11 +63,23 @@ func ScanArticle(url string) OGPScanResult{
 	fmt.Printf("Meta Image: '%s'\n", metaImageURL)
 
 
+	pageTitle = doc.Find("title").Contents().Text()
+
+	// 以下の指定で記事本文の取得が可能
+	pageHeader := doc.Find("header").Contents().Text()
+	cnvPageHeader := convNewline(pageHeader, " ")
+
+	pageBody := doc.Find("body").Contents().Text()
+	cnvPageBody := convNewline(pageBody," ")
+
+	pageMetaDescription := convNewline(metaDescription, " ")
+
+
 	// OGP解析で取得したメタ情報
 	rtnVal := OGPScanResult{
 		URL						: metaURL,
 		Title					: pageTitle,
-		Description		:	metaDescription,
+		Description		:	pageMetaDescription,
 		ThumbnailURL	: metaImageURL,
 		Header				: cnvPageHeader,
 		Body					: cnvPageBody,
