@@ -9,18 +9,17 @@ import (
 	"fmt"
 	config "keep-back-api/config"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 )
 
 type DBService struct{}
 
-var (
-	dbConfig config.Config
-	db       *sqlx.DB
-)
+var dbConfig config.Config // db       *sqlx.DB
 
-// Init is initialize db from main function
-func (DBService) Init() {
+var db *sqlx.DB
+
+func (DBService) InitDB() {
 	params := dbConfig.ConfigParams()
 	fmt.Println(params)
 	dsn := params.DBUser + ":" + params.DBPass + "@tcp(" + params.DBHost + ":" + params.DBPort + ")/" + params.DBName + "?charset=utf8mb4&parseTime=True&loc=Local"
@@ -28,12 +27,17 @@ func (DBService) Init() {
 	sqlxDB, sqlxErr := sqlx.Connect("mysql", dsn)
 
 	if sqlxErr != nil {
+		fmt.Println("DB Connection Error")
 		panic(sqlxErr)
 	}
+
+	if sqlxDB.Ping() != nil {
+		fmt.Println("DB connection Failed sqlx")
+	}
+
 	db = sqlxDB
 }
 
-// GetDB is called in models
-func (*DBService) DBSession() *sqlx.DB {
-	return db
+func (DBService) Con() sqlx.DB {
+	return *db
 }

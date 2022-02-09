@@ -22,6 +22,6 @@ func (Config) ConfigParams() *DBConfig {
 		DBPort: os.Getenv("DB_PORT"),
 		DBName: os.Getenv("DB_NAME"),
 	}
-	
+
 	return dbConfig
 }

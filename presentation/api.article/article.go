@@ -25,3 +25,6 @@ func (s ArticlePresentation) New(c *gin.Context) {
 		c.JSON(201, p)
 	}
 }
+
+func (s ArticlePresentation) All(c *gin.Context) {
+}
